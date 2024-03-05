@@ -1,0 +1,16 @@
+**.DS_Store
+.disabled
+
+registration_key
+sig
+auth
+.idea/
+*.iml
+
+
+# Added by cargo
+
+target/
+
+chat_state.json
+chat_settings.json
