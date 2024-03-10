@@ -54,12 +54,6 @@ local function create_window()
     }
 end
 
---- @param bufnr number
-local function appendOptions(bufnr)
-    vim.api.nvim_buf_set_lines(Generator_bufh, 0, -1, false, {"Test", "david"})
-end
-
-
 function GeneratorUi.toggle_quick_menu()
     if Generator_win_id ~= nil and vim.api.nvim_win_is_valid(Generator_win_id) then
         close_menu()
@@ -70,8 +64,15 @@ function GeneratorUi.toggle_quick_menu()
 
     Generator_win_id = win_info.win_id
     Generator_bufh = win_info.bufnr
-    appendOptions(Generator_bufh)
+
+    -- Setting up the Buffer UI
+    Buffer.appendOptions(Generator_bufh)
     Buffer.navigation(Generator_bufh)
+end
+
+function GeneratorUi.run_select_command()
+    local line = vim.api.nvim_get_current_line()
+    print(line)
 end
 
 return GeneratorUi
