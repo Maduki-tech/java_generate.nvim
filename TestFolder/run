@@ -1,0 +1,3 @@
+#!/bin/bash
+mvn clean compile -q
+mvn exec:java -Dexec.mainClass="de.schlueter.App" -q
