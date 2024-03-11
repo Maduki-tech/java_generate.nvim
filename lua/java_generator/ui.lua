@@ -1,5 +1,6 @@
 local GeneratorUi = {}
 local Buffer = require("java_generator.buffer")
+local Logger = require("java_generator.logger")
 
 Generator_win_id = nil
 Generator_bufh = nil
@@ -72,6 +73,7 @@ end
 
 function GeneratorUi.run_select_command()
     local line = vim.api.nvim_get_current_line()
+    Logger:log(line)
     print(line)
 end
 
