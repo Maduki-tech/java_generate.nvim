@@ -8,7 +8,7 @@ function M.setup()
         "n",
         "<leader>tb",
         (function()
-            Generator:generate()
+            Generator:generate_test_file({})
         end),
         {silent = true}
     )

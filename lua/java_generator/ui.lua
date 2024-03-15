@@ -57,9 +57,7 @@ local function create_window()
 end
 
 function GeneratorUi.toggle_quick_menu()
-
     Current_buffer = vim.api.nvim_get_current_buf()
-
 
     if Generator_win_id ~= nil and vim.api.nvim_win_is_valid(Generator_win_id) then
         close_menu()
@@ -83,7 +81,9 @@ function GeneratorUi.run_select_command()
     if line == 1 then
         Logger:log("Line = 1")
         Generator:generate(Current_buffer)
-        Logger:log("In UI: " .. vim.inspect(Generator:get_methodes()))
+        close_menu()
+        local methodes = Generator:get_methodes()
+        Generator:generate_test_file(methodes)
     end
 end
 

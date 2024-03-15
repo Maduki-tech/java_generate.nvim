@@ -129,25 +129,39 @@ function Generator:generate(current_buffer)
     Logger:log("Generated the paths and methodes")
 end
 
--- ---Main file to generate the tests
--- function Generator:generate_test_file()
---     local methodes = self:get_Methodes()
---     local test_file = io.open(self.targetPath, "w")
---
---     if test_file then
---         test_file:write("package " .. self.className .. ";\n")
---         test_file:write("import org.junit.jupiter.api.Test;\n")
---         test_file:write("import static org.junit.jupiter.api.Assertions.*;\n")
---         test_file:write("public class " .. self.className .. "Test {\n")
---         for _, methode in ipairs(methodes) do
---             test_file:write("\t@Test\n")
---             test_file:write("\tpublic void " .. methode[1] .. "_test() {\n")
---             test_file:write("\t\t// TODO: write the test for the " .. methode[1] .. " methode\n")
---             test_file:write("\t}\n")
---         end
---         test_file:write("}\n")
---         test_file:close()
---     end
--- end
+---Main file to generate the tests
+function Generator:generate_test_file(methodes)
+    self.targetPath = self.targetPath:gsub("^/", "")
+    local test_file = io.open(self.targetPath, "w")
+
+    if test_file then
+        Logger:log("File created")
+        test_file:write("package " .. self.className .. ";\n")
+        test_file:write("import org.junit.jupiter.api.Test;\n")
+        test_file:write("import static org.junit.jupiter.api.Assertions.*;\n")
+        test_file:write("public class " .. self.className .. "Test {\n")
+        for _, methode in ipairs(methodes) do
+            Logger:log("methode: " .. vim.inspect(methode))
+            Logger:log("methode[0]: " .. methode[1])
+            Logger:log("methode[1]: " .. methode[2])
+
+            local methode_name = methode[1] ---@type string
+            local methode_parameters = methode[2] ---@type string
+            Logger:log("public void " .. methode_name .. "_test" .. methode_parameters)
+            local function_call = "public void " .. methode_name .. "_test" .. methode_parameters
+            test_file:write("\t@Test\n")
+            test_file:write("\t" .. function_call .. "{\n")
+            test_file:write("\t\t// TODO: write the test for the " .. methode[1] .. " methode\n")
+            test_file:write("\t}\n")
+        end
+        test_file:write("}\n")
+        test_file:close()
+
+        -- open the file
+        vim.cmd("e " .. self.targetPath)
+    else
+        Logger:log("File not created")
+    end
+end
 
 return Generator:new()
