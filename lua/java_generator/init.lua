@@ -8,7 +8,7 @@ function M.setup()
         "n",
         "<leader>tb",
         (function()
-            Generator:get_Methodes()
+            Generator:generate()
         end),
         {silent = true}
     )

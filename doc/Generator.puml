@@ -1,0 +1,18 @@
+@startuml
+
+class Generator{
+    String currentPath
+    String targetPath
+    String className
+    String[][] methodes
+----
+    + Generator new()
+    + void generate()
+    + String[][] get_methodes()
+    + String get_currentPath()
+    + String get_targetPath()
+    + String get_className()
+    - void fill_paths()
+}
+
+@enduml

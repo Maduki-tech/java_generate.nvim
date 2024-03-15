@@ -4,6 +4,7 @@ local Logger = require("java_generator.logger")
 
 Generator_win_id = nil
 Generator_bufh = nil
+Current_buffer = nil
 
 --- Closes the buffer and window
 --- Also it is resetting the values to null
@@ -56,6 +57,10 @@ local function create_window()
 end
 
 function GeneratorUi.toggle_quick_menu()
+
+    Current_buffer = vim.api.nvim_get_current_buf()
+
+
     if Generator_win_id ~= nil and vim.api.nvim_win_is_valid(Generator_win_id) then
         close_menu()
         return
@@ -72,9 +77,14 @@ function GeneratorUi.toggle_quick_menu()
 end
 
 function GeneratorUi.run_select_command()
-    local line = vim.api.nvim_get_current_line()
-    Logger:log(line)
-    print(line)
+    -- get curretn line number
+    local Generator = require("java_generator.generator")
+    local line = vim.api.nvim_win_get_cursor(0)[1]
+    if line == 1 then
+        Logger:log("Line = 1")
+        Generator:generate(Current_buffer)
+        Logger:log("In UI: " .. vim.inspect(Generator:get_methodes()))
+    end
 end
 
 return GeneratorUi
