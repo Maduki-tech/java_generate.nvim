@@ -139,7 +139,7 @@ function Generator:generate_test_file(methodes)
         test_file:write("package " .. self.className .. ";\n")
         test_file:write("import org.junit.jupiter.api.Test;\n")
         test_file:write("import static org.junit.jupiter.api.Assertions.*;\n")
-        test_file:write("public class " .. self.className .. "Test {\n")
+        test_file:write("public class " .. self.className .. " {\n")
         for _, methode in ipairs(methodes) do
             Logger:log("methode: " .. vim.inspect(methode))
             Logger:log("methode[0]: " .. methode[1])
