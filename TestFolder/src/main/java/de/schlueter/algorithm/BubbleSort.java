@@ -1,4 +1,4 @@
-package de.schlueter;
+package de.schlueter.algorithm;
 
 /**
  * BubbleSort
