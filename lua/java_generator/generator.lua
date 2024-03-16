@@ -166,6 +166,11 @@ function Generator:generate_test_file(methodes)
         vim.cmd("e " .. self.targetPath)
         return
     end
+
+    local dir_path = self.targetPath:gsub("/[^/]*$", "")
+    vim.fn.mkdir(dir_path, "p")
+
+
     local test_file = io.open(self.targetPath, "w")
 
     if test_file then
