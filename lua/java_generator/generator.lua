@@ -1,6 +1,7 @@
 local ts = require("vim.treesitter")
 local ts_query = require("vim.treesitter.query")
 local Logger = require("java_generator.logger")
+local utils = require("java_generator.utils")
 
 ---Fill the paths of the current file and the target file
 ---@return {currentPath: string, targetPath: string, className: string}
@@ -78,11 +79,35 @@ local function get_all_methods(current_buffer)
     return methods
 end
 
+local function generate_package_path(current_buffer)
+    local parser = ts.get_parser(current_buffer, "java")
+    local root_tree = parser:parse()[1]:root()
+
+    local query = ts_query.parse("java", [[
+        (package_declaration) @package_name
+        ]])
+
+    for _, match in query:iter_matches(root_tree, current_buffer, 0, -1) do
+        local package_name_node
+        for id, node in ipairs(match) do
+            local capture_name = query.captures[id]
+            if capture_name == "package_name" then
+                package_name_node = node
+            end
+        end
+
+        if package_name_node then
+            return vim.treesitter.get_node_text(package_name_node, current_buffer)
+        end
+    end
+end
+
 ---@class Generator
 ---@field currentPath string
 ---@field targetPath string
 ---@field className string
 ---@field methodes {methode_name: string, methode_parameter: string}[]
+---@field packagePath string
 local Generator = {}
 
 ---@return Generator
@@ -93,7 +118,8 @@ function Generator:new()
             currentPath = nil,
             targetPath = nil,
             className = nil,
-            methodes = nil
+            methodes = nil,
+            packagePath = nil
         },
         self
     )
@@ -121,11 +147,12 @@ end
 function Generator:generate(current_buffer)
     local paths = fill_paths(current_buffer)
     local methodes = get_all_methods(current_buffer)
+    local package_path = generate_package_path(current_buffer)
     self.currentPath = paths.currentPath
     self.targetPath = paths.targetPath
     self.className = paths.className
     self.methodes = methodes
-    Logger:log("methodes: " .. vim.inspect(methodes))
+    self.packagePath = package_path
     Logger:log("Generated the paths and methodes")
 end
 
@@ -136,7 +163,7 @@ function Generator:generate_test_file(methodes)
 
     if test_file then
         Logger:log("File created")
-        test_file:write("package " .. self.className .. ";\n")
+        test_file:write(self.packagePath .. "\n")
         test_file:write("import org.junit.jupiter.api.Test;\n")
         test_file:write("import static org.junit.jupiter.api.Assertions.*;\n")
         test_file:write("public class " .. self.className .. " {\n")
