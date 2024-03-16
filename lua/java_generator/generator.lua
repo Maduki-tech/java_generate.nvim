@@ -1,7 +1,6 @@
 local ts = require("vim.treesitter")
 local ts_query = require("vim.treesitter.query")
 local Logger = require("java_generator.logger")
-local utils = require("java_generator.utils")
 
 ---Fill the paths of the current file and the target file
 ---@return {currentPath: string, targetPath: string, className: string}
@@ -148,6 +147,8 @@ function Generator:generate(current_buffer)
     local paths = fill_paths(current_buffer)
     local methodes = get_all_methods(current_buffer)
     local package_path = generate_package_path(current_buffer)
+    -- check if target path already exists
+
     self.currentPath = paths.currentPath
     self.targetPath = paths.targetPath
     self.className = paths.className
@@ -159,6 +160,12 @@ end
 ---Main file to generate the tests
 function Generator:generate_test_file(methodes)
     self.targetPath = self.targetPath:gsub("^/", "")
+    if vim.fn.filereadable(self.targetPath) == 1 then
+        Logger:log("File already exists")
+        -- open the file in the buffer
+        vim.cmd("e " .. self.targetPath)
+        return
+    end
     local test_file = io.open(self.targetPath, "w")
 
     if test_file then

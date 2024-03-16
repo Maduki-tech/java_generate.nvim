@@ -1,7 +1,7 @@
-package BubbleSortTest;
+package de.schlueter;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-public class BubbleSortTestTest {
+public class BubbleSortTest {
 	@Test
 	public void sort_test(int[] array, String s){
 		// TODO: write the test for the sort methode
